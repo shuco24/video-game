@@ -1,26 +1,18 @@
 import type Game from "../models/Game";
-import apiClient, { CanceledError } from "./api-client";
+import httpService from "./http-service";
 
 interface RawGame extends Omit<Game, "image"> {
   background_image: string;
 }
 
-class GamesService {
-  getAllGames() {
-    const controller = new AbortController();
-    const request = apiClient.get<Game[]>("/games", {
-      signal: controller.signal,
-      transformResponse: (data) => {
-        const parsed = JSON.parse(data);
-        return parsed.results.map((g: RawGame) => ({
-          ...g,
-          image: g.background_image,
-        }));
-      },
-    });
+const endpoint = "/games";
 
-    return { request, cancel: controller } as const;
-  }
-}
+const transformerReponse = (data: string): Game[] => {
+  const parsed = JSON.parse(data);
+  return parsed.results.map(({ background_image, ...game }: RawGame) => ({
+    ...game,
+    image: background_image,
+  }));
+};
 
-export default new GamesService();
+export default new httpService<Game>(endpoint, transformerReponse);
