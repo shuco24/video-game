@@ -1,35 +1,36 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import gamesService from "./services/games-service";
+import { CanceledError } from "axios";
+import type Game from "./models/Game";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [games, setGames] = useState<Game[]>([]);
+
+  useEffect(() => {
+    const { request, cancel } = gamesService.getAllGames();
+
+    request
+      .then((res) => {
+        setGames(res.data);
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        console.log(err);
+      });
+
+    return () => {
+      cancel.abort();
+    };
+  }, [games]);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div>
+      <ul>
+        {games.length > 0 &&
+          games.map((g) => <li key={g.id.toString()}>{g.name}</li>)}
+      </ul>
+    </div>
+  );
 }
 
-export default App
+export default App;
