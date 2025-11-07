@@ -2,18 +2,18 @@
   --bg: white;
   --select-bg: #f9f9f9;
   --select-border: #ccc;
-  --select-text: #333333; 
+  --select-text: #333333;
 }
 
-:root[data-theme="dark"] {  
-  width: 100%; 
+:root[data-theme="dark"] {
+  width: 100%;
   --bg: #181818;
   --text: #f5f5f5;
   --card: #262626;
   --primary: #3b82f6;
 
-  --select-bg: #2b2b2b;       
-  --select-border: #444;  
+  --select-bg: #2b2b2b;
+  --select-border: #444;
   --select-text: #868686;
 }
 
@@ -21,7 +21,7 @@
   margin: 0 auto;
   padding: 2rem;
   background-color: var(--bg);
-  color: var(--text)
+  color: var(--text);
 }
 .games-grid {
   display: grid;

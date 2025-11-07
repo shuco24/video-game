@@ -9,6 +9,7 @@ import DarkModeSwitch from "./components/DarkModeSwitch";
 import OrderBySelect from "./components/OrderBySelect";
 import type Game from "./models/Game";
 import { sort } from "./utils/sortGames";
+import { Button, HStack } from "@chakra-ui/react";
 
 function App() {
   const [genreSelected, setGenreSelected] = useState<number>(0);
@@ -46,7 +47,9 @@ function App() {
         );
 
   filteredGames =
-    sortedBy === "" ? filteredGames : sort<Game>(filteredGames, sortedBy);
+    sortedBy === ""
+      ? filteredGames
+      : sort<Game>(filteredGames, sortedBy as keyof Game);
 
   document.documentElement.setAttribute("data-theme", darkMode ? "dark" : "");
 
@@ -70,8 +73,12 @@ function App() {
           />
         </div>
         <div className="col">
-          <div className="row mb-3">
+          <div  className="row mb-3">
             <h2>Games</h2>
+                <HStack>
+                   <Button>Click me</Button>
+      <Button>Click me</Button>
+    </HStack>
           </div>
           <div className="row mb-3">
             <OrderBySelect
