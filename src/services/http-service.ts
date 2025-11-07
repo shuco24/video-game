@@ -1,5 +1,4 @@
 import apiClient from "./api-client";
-
 interface Entity {
   id: number;
 }
@@ -14,11 +13,17 @@ class HttpService<T extends Entity> {
   }
 
   getAll() {
-    console.log("Haciendo petición desde getAll");
+    const defaultTransformers = apiClient.defaults.transformResponse;
+
     const controller = new AbortController();
     const request = apiClient.get<T[]>(this.endpoint, {
       signal: controller.signal,
-      transformResponse: this.transformerResponse,
+      ...(this.transformerResponse && {
+        transformResponse: [
+          ...(Array.isArray(defaultTransformers) ? defaultTransformers : []),
+          this.transformerResponse,
+        ],
+      }),
     });
 
     return { request, cancel: controller } as const;

@@ -1,18 +1,34 @@
+import type { Platform } from "../models";
 import type Game from "../models/Game";
 import httpService from "./http-service";
 
-interface RawGame extends Omit<Game, "image"> {
-  background_image: string;
-}
-
 const endpoint = "/games";
 
-const transformerReponse = (data: string): Game[] => {
-  const parsed = JSON.parse(data);
-  return parsed.results.map(({ background_image, ...game }: RawGame) => ({
-    ...game,
-    image: background_image,
-  }));
+interface RawPlatform {
+  platform: Platform & { image_background: string };
+  requirements_en?: { minimum: string; recommended: string };
+}
+
+type RawGame = Omit<Game, "platforms"> & {
+  metacritic: number;
+  platforms?: RawPlatform[];
+};
+
+const transformerReponse = (data: unknown): Game[] => {
+  if (!Array.isArray(data)) return [];
+  try {
+    return data.map((game: RawGame) => ({
+      ...game,
+      score: game.metacritic,
+      platforms: game.platforms?.map((p) => ({
+        ...p.platform,
+        image: p.platform.image_background,
+      })),
+    }));
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
 };
 
 export default new httpService<Game>(endpoint, transformerReponse);
