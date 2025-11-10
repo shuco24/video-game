@@ -38,7 +38,7 @@
 }
 
 .wrapper input:checked + .slider {
-  background: #4cd964; 
+  background: #4cd964;
 }
 
 .wrapper input:checked + .slider::before {
